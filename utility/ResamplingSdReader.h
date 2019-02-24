@@ -33,6 +33,7 @@
 
 #include "../spi_interrupt.h"
 
+
 const unsigned int ResamplingSdReader_NUM_BUFFERS = 4;
 
 class ResamplingSdReader {
@@ -51,7 +52,7 @@ public:
     int read(void *buf, uint16_t nbyte);
     bool readNextValue(int16_t *value);
 
-    void setPlaybackRate(float f) {
+    void setPlaybackRate(double f) {
         _playbackRate = f;
     }
 
@@ -71,15 +72,15 @@ public:
         _enable_interpolation = enableInterpolation;
     }
 
- private:
-
+private:
     volatile bool _playing = false;
     volatile int32_t _file_offset;
+    volatile int32_t _last_read_offset = 0;
 
     bool _enable_interpolation = true;
     uint32_t _file_size;
-    float _playbackRate = 1;
-    float _remainder = 0;
+    double _playbackRate = 1.0;
+    double _remainder = 0.0;
 
     int _bufferPosition = 0;
 
@@ -89,10 +90,11 @@ public:
 
     volatile signed char _readBuffer = -1;
     volatile signed char _playBuffer = -1;
-
+    signed char _numBuffers = 0;
     File _file;
 
     void updateBuffers(void);
+    bool isInRange(void);
 
     void StartUsingSPI(){
 #if defined(HAS_KINETIS_SDHC)
@@ -110,5 +112,6 @@ public:
 #endif
     }
 };
+
 
 #endif //TEENSYAUDIOLIBRARY_RESAMPLINGSDREADER_H
