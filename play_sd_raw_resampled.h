@@ -58,6 +58,10 @@ public:
         sdReader.setPlaybackRate(f);
     }
 
+    void setLoopType(loop_type t) {
+        sdReader.setLoopType(t);
+    }
+
 private:
 
     uint32_t file_size;
